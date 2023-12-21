@@ -1,0 +1,103 @@
+---
+title: "Analysis of Anime Popularity:"
+subtitle: "by MyAnimeList Fan-Service - Milestone 2"
+author: "Aaron J. Brown"
+date: "Spring 2023"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+### *Analyzing the relationship between an anime's popularity and its fan-service (favorites, scores, subscribers).* 
+
+#### Using data from MyAnimeList, an anime's popularity can be measured several different ways, thus "the best" anime can vary based on variables used to make the assessment. Some of these variables can include:
+
+#### 1) Most Viewed Anime
+#### 2) Most Members and Scorers (basically subscribers)
+#### 3) Most Favorited Anime
+#### 4) Best Rated/Scored Anime
+
+### About the Data.
+#### The data used in this analysis was scrapped from an anime rating and listing site (MyAnimeList) that provides details of almost all available anime. Though the site does not allow users to actually watch any of the programs directly from the site, it provides a space for anime fans to compile all of their favorite anime into a list, as well as ranking, sharing, commenting, and a host of other features.
+#### The datasets used provide details of over 18,000 separate anime productions, including series, movies, OVAs, ONAs, music, and others. Information such as number of episodes, duration, score, popularity, members, etc. can be extracted from the data. The three datasets contain data from three years: 2023, 2022, and 2021. 
+
+### Relevance.
+#### The debate of "The Best Anime" is one of endless squabble; this analysis will help to provide insight to the determination of The Best Anime by analyzing fan-driven data. Recommendations provided by websites and articles can be biased or sponsor influenced, analyses such as this help fans to determine what to watch next, or provide gateway anime to new or prospect fans. This analysis is also one of personal interest! 
+
+### Key Points.
+#### This analysis intends to answer key questions such as:
+#### 1) What is the "Best" anime based on fan-service?
+#### 2) What variables best estimate popularity?
+#### 3) Is there a relationship between an anime's score and its popularity? 
+#### 4) Is there a relationship between the number of scores and its popularity? 
+#### 5) Do anime with the most members get the most scores?
+#### 6) Do anime with the most members get the better scores?
+
+### Data Importing and Cleaning
+#### The data is imported using read_csv() as all files are in csv format.
+#### These datasets are quite large, and contain tons of information irrelevant to this analysis, as well as missing values. Luckily most of the missing values fall within columns that are not needed for this analysis. Undesired columns from the datasets are selected and trimmed from the data, resulting in the creation of a new dataframe, excluding unneeded variables (url, images, trailer, approved, titles, title_synonyms, aired, synopsis, background, broadcast, licensors, explicit_genres).
+#### There is an issue with the studio and producers column that prevet access to the variables; anime can have multiple studios and producers, which causes errors in the data when attempting to use. A way of separating the values to make the producers and studio colums accessible could provide extra points in this analysis, for example, an analysis of popularity by producing studio could provide keen insight on how popularity is dispersed.
+#### This analysis will make use of the datasets separately due to them being from different years, though combining them is possible, the implications are not clear, and may also result in duplicate values.
+
+### Analysis.
+#### The approach is to utilize, primarily: scores, popularity, members, and favorites to determine the most popular anime and determine if there are any relationships between an anime's popularity and the amount of fans, as well as the different means to which fans interact with anime on MyAnimeList. As MyAnimeList allows only registered users to "score", and un-registered users can "favorite" there is expected to be a difference with the relationship between scores and favorites as they relate to popularity, possibly due to a more dedicated fan-service willing to go through the motions of creating an account.
+#### GGPlot will and Patchwork will be used to produce visualizations of the various relationships mentioned before.
+#### This analysis does not seek to determine a true "Best Anime"; this verbiage is used to refer to the most popular anime based on data and certain accompanying variables. The intention of this study is to outline any relationships between our variables of interest, and the popularity of anime.
+#### This analysis will seek to reveal new information that may not have otherwise been available, for instance, we could see how anime popularity can vary between english-subbed/dubbed, versus the japanese-dubbed originals, which could also provide some sort of demographics of the fans of those productions.
+#### By the completion of this analysis we could also see if there are peaks in popularity of  anime productions by season, like if more people watch anime in the winter, then winter releases should be popular. This part of the analysis could be tricky due to missing values in the "season" column.
+#### The creation and addition of new variables that assign a ranking to the anime entries in order of: most members, most favorites, score, and scored by, could help with viewing the data and providing different insights to the data.
+#### The results from this data seem to be better provided through visualizations such as scatterplots, line graphs, and bar graphs.(ggplot, geom_segment)
+
+### Data Importing and Cleaning (possible additions/need to know)
+#### As mentioned earlier, being able to make use of the producer/studio colums could prove useful in this analysis.
+#### Applying unique IDs to each entry could make use of the date more efficient.
+#### Will including movies and other non-series formats affect the results we see, or would performing a separate analysis with those categories be more relevant to this case.
+#### There is no intention to utilize machine learning at this point, though the application of ML to could be very useful if the right "angle" is provided.
+
+### Data.
+#### This dataset contains some of the information publicly displayed at https://myanimelist.net. Contains information about Anime itself as well as user ratings and user data. Dataset contains the list and metadata of all published anime (released/unreleased) currently about 18,000 on the MyAnimeList site.
+#### MyAnimeList 2023:
+##### https://www.kaggle.com/datasets/mangarahutagalung/anime-and-manga-data-from-myanimelist-march-2023
+#### MyAnimeList 2022: 
+##### https://www.kaggle.com/datasets/vishalmane10/anime-dataset-2022
+#### MyAnimeList 2021:
+##### https://www.kaggle.com/datasets/snehaanbhawal/anime-list-for-recommendation-system-june-2021
+
+```{r setup, include=FALSE}
+setwd("/Users/aaronbrown/Documents/ClassWork/DSC 520 - Statistics for Data Science/Project")
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r include = FALSE} 
+library(tidyverse)
+library(scales)
+library(patchwork)
+```
+
+```{r include = FALSE} 
+anime_data23 <- read.csv("/Users/aaronbrown/Documents/ClassWork/DSC 520 - Statistics for Data Science/Project/anime_data_2023.csv")
+# View(anime_data23)
+```
+
+```{r}
+# REMOVES UNNEEDED COLUMNS
+anime_tidy23 <- anime_data23%>%
+  select(-c(url, images, trailer, approved, titles, title_japanese, title_english, producers, studios, genres, themes, demographics, title_synonyms, aired, synopsis, background, broadcast, licensors, explicit_genres))
+head(anime_tidy23)
+```
+### Future Steps. 
+#### Possibly controlling for potential confounding varibales like:
+##### - The popularity of the MyAnimeList site during anime release dates affecting scores and ratings and how many individuals submitted scores and ratings.
+##### - The incentive to favorite an anime for future consumption rather than as a method for rating it.
+##### - Shows with more loyal fanbases are more willing to score and rate.
+#### Testing to see if number of episodes, or even the duration of episodes have an effect on popularity:
+##### - Do longer shows get more viewers? More favorites?
+#### Applying a new column to the data that provides each entry with a unique id could make the analysis of the data easier.
+
+### quick view of df with ONLY studios/producers/genres. 
+```{r}
+# studios/producers example
+useless_tidy23 <- anime_data23%>%
+  select(producers, studios, genres)
+head(useless_tidy23)
+```
